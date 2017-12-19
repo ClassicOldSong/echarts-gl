@@ -7,7 +7,7 @@
 		exports["echarts-gl"] = factory(require("echarts"));
 	else
 		root["echarts-gl"] = factory(root["echarts"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_0__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -5139,7 +5139,7 @@ var _number = __webpack_require__(8);
 
 var parsePercent = _number.parsePercent;
 
-var formatUtil = __webpack_require__(18);
+var formatUtil = __webpack_require__(17);
 
 // Layout helpers for each component positioning
 var each = zrUtil.each;
@@ -5667,17 +5667,6 @@ module.exports = _default;
 /* 5 */
 /***/ (function(module, exports) {
 
-var _default = typeof window !== 'undefined' && (window.requestAnimationFrame && window.requestAnimationFrame.bind(window) || // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
-window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window) || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame) || function (func) {
-  setTimeout(func, 16);
-};
-
-module.exports = _default;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
 // Simple LRU cache use doubly linked list
 // @module zrender/core/LRU
 
@@ -5882,12 +5871,23 @@ var _default = LRU;
 module.exports = _default;
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+var _default = typeof window !== 'undefined' && (window.requestAnimationFrame && window.requestAnimationFrame.bind(window) || // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
+window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window) || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame) || function (func) {
+  setTimeout(func, 16);
+};
+
+module.exports = _default;
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var vec2 = __webpack_require__(16);
+var vec2 = __webpack_require__(15);
 
-var matrix = __webpack_require__(17);
+var matrix = __webpack_require__(16);
 
 /**
  * @module echarts/core/BoundingRect
@@ -6576,7 +6576,7 @@ var external__echarts__default = /*#__PURE__*/__webpack_require__.n(external__ec
 /**
  * @name qtek.version
  */
-/* harmony default export */ var version = ('0.6.0');
+/* harmony default export */ var version = ('0.6.1');
 
 // CONCATENATED MODULE: ./node_modules/qtek/src/core/mixin/extend.js
 /**
@@ -16284,7 +16284,7 @@ RayPicking.Intersection = function (point, pointWorld, target, triangle, triangl
 /* harmony default export */ var picking_RayPicking = (RayPicking);
 
 // EXTERNAL MODULE: ./node_modules/zrender/lib/animation/requestAnimationFrame.js
-var requestAnimationFrame = __webpack_require__(5);
+var requestAnimationFrame = __webpack_require__(6);
 var requestAnimationFrame_default = /*#__PURE__*/__webpack_require__.n(requestAnimationFrame);
 
 // CONCATENATED MODULE: ./src/core/LayerGL.js
@@ -18878,7 +18878,7 @@ function lightSortFunc(a, b) {
 /* harmony default export */ var src_Scene = (Scene);
 
 // EXTERNAL MODULE: ./node_modules/zrender/lib/core/LRU.js
-var LRU = __webpack_require__(6);
+var LRU = __webpack_require__(5);
 var LRU_default = /*#__PURE__*/__webpack_require__.n(LRU);
 
 // CONCATENATED MODULE: ./node_modules/qtek/src/TextureCube.js
@@ -20416,7 +20416,7 @@ var Sphere = src_Geometry.extend(
 /* harmony default export */ var geometry_Sphere = (Sphere);
 
 // CONCATENATED MODULE: ./node_modules/qtek/src/shader/source/basic.glsl.js
-/* harmony default export */ var basic_glsl = ("@export qtek.basic.vertex\nuniform mat4 worldViewProjection : WORLDVIEWPROJECTION;\nuniform vec2 uvRepeat : [1.0, 1.0];\nuniform vec2 uvOffset : [0.0, 0.0];\nattribute vec2 texcoord : TEXCOORD_0;\nattribute vec3 position : POSITION;\nattribute vec3 barycentric;\n@import qtek.chunk.skinning_header\nvarying vec2 v_Texcoord;\nvarying vec3 v_Barycentric;\nvoid main()\n{\n    vec3 skinnedPosition = position;\n#ifdef SKINNING\n    @import qtek.chunk.skin_matrix\n    skinnedPosition = (skinMatrixWS * vec4(position, 1.0)).xyz;\n#endif\n    v_Texcoord = texcoord * uvRepeat + uvOffset;\n    v_Barycentric = barycentric;\n    gl_Position = worldViewProjection * vec4(skinnedPosition, 1.0);\n}\n@end\n@export qtek.basic.fragment\nvarying vec2 v_Texcoord;\nuniform sampler2D diffuseMap;\nuniform vec3 color : [1.0, 1.0, 1.0];\nuniform vec3 emission : [0.0, 0.0, 0.0];\nuniform float alpha : 1.0;\n#ifdef ALPHA_TEST\nuniform float alphaCutoff: 0.9;\n#endif\nuniform float lineWidth : 0.0;\nuniform vec4 lineColor : [0.0, 0.0, 0.0, 0.6];\nvarying vec3 v_Barycentric;\n@import qtek.util.edge_factor\n@import qtek.util.rgbm\n@import qtek.util.srgb\nvoid main()\n{\n#ifdef RENDER_TEXCOORD\n    gl_FragColor = vec4(v_Texcoord, 1.0, 1.0);\n    return;\n#endif\n    gl_FragColor = vec4(color, alpha);\n#ifdef DIFFUSEMAP_ENABLED\n    vec4 tex = decodeHDR(texture2D(diffuseMap, v_Texcoord));\n#ifdef SRGB_DECODE\n    tex = sRGBToLinear(tex);\n#endif\n#if defined(DIFFUSEMAP_ALPHA_ALPHA)\n    gl_FragColor.a = tex.a;\n#endif\n    gl_FragColor.rgb *= tex.rgb;\n#endif\n    gl_FragColor.rgb += emission;\n    if( lineWidth > 0.)\n    {\n        gl_FragColor.rgb = mix(gl_FragColor.rgb, lineColor.rgb, (1.0 - edgeFactor(lineWidth)) * lineColor.a);\n    }\n#ifdef GAMMA_ENCODE\n    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1 / 2.2));\n#endif\n#ifdef ALPHA_TEST\n    if (gl_FragColor.a < alphaCutoff) {\n        discard;\n    }\n#endif\n    gl_FragColor = encodeHDR(gl_FragColor);\n}\n@end");
+/* harmony default export */ var basic_glsl = ("@export qtek.basic.vertex\nuniform mat4 worldViewProjection : WORLDVIEWPROJECTION;\nuniform vec2 uvRepeat : [1.0, 1.0];\nuniform vec2 uvOffset : [0.0, 0.0];\nattribute vec2 texcoord : TEXCOORD_0;\nattribute vec3 position : POSITION;\nattribute vec3 barycentric;\n@import qtek.chunk.skinning_header\nvarying vec2 v_Texcoord;\nvarying vec3 v_Barycentric;\n#ifdef VERTEX_COLOR\nattribute vec4 a_Color : COLOR;\nvarying vec4 v_Color;\n#endif\nvoid main()\n{\n    vec3 skinnedPosition = position;\n#ifdef SKINNING\n    @import qtek.chunk.skin_matrix\n    skinnedPosition = (skinMatrixWS * vec4(position, 1.0)).xyz;\n#endif\n    v_Texcoord = texcoord * uvRepeat + uvOffset;\n    v_Barycentric = barycentric;\n    gl_Position = worldViewProjection * vec4(skinnedPosition, 1.0);\n#ifdef VERTEX_COLOR\n    v_Color = a_Color;\n#endif\n}\n@end\n@export qtek.basic.fragment\nvarying vec2 v_Texcoord;\nuniform sampler2D diffuseMap;\nuniform vec3 color : [1.0, 1.0, 1.0];\nuniform vec3 emission : [0.0, 0.0, 0.0];\nuniform float alpha : 1.0;\n#ifdef ALPHA_TEST\nuniform float alphaCutoff: 0.9;\n#endif\n#ifdef VERTEX_COLOR\nvarying vec4 v_Color;\n#endif\nuniform float lineWidth : 0.0;\nuniform vec4 lineColor : [0.0, 0.0, 0.0, 0.6];\nvarying vec3 v_Barycentric;\n@import qtek.util.edge_factor\n@import qtek.util.rgbm\n@import qtek.util.srgb\nvoid main()\n{\n#ifdef RENDER_TEXCOORD\n    gl_FragColor = vec4(v_Texcoord, 1.0, 1.0);\n    return;\n#endif\n    gl_FragColor = vec4(color, alpha);\n#ifdef VERTEX_COLOR\n    gl_FragColor *= v_Color;\n#endif\n#ifdef DIFFUSEMAP_ENABLED\n    vec4 tex = decodeHDR(texture2D(diffuseMap, v_Texcoord));\n#ifdef SRGB_DECODE\n    tex = sRGBToLinear(tex);\n#endif\n#if defined(DIFFUSEMAP_ALPHA_ALPHA)\n    gl_FragColor.a = tex.a;\n#endif\n    gl_FragColor.rgb *= tex.rgb;\n#endif\n    gl_FragColor.rgb += emission;\n    if( lineWidth > 0.)\n    {\n        gl_FragColor.rgb = mix(gl_FragColor.rgb, lineColor.rgb, (1.0 - edgeFactor(lineWidth)) * lineColor.a);\n    }\n#ifdef GAMMA_ENCODE\n    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1 / 2.2));\n#endif\n#ifdef ALPHA_TEST\n    if (gl_FragColor.a < alphaCutoff) {\n        discard;\n    }\n#endif\n    gl_FragColor = encodeHDR(gl_FragColor);\n}\n@end");
 
 // CONCATENATED MODULE: ./node_modules/qtek/src/plugin/Skydome.js
 
@@ -29343,7 +29343,7 @@ var Grid3DView_dimIndicesMap = {
     }
 }));
 // EXTERNAL MODULE: ./node_modules/echarts/lib/coord/cartesian/Cartesian.js
-var Cartesian = __webpack_require__(15);
+var Cartesian = __webpack_require__(14);
 var Cartesian_default = /*#__PURE__*/__webpack_require__.n(Cartesian);
 
 // CONCATENATED MODULE: ./src/coord/grid3D/Cartesian3D.js
@@ -31847,7 +31847,7 @@ function halton(index, base) {
 
 /* harmony default export */ var effect_halton = (halton);
 // CONCATENATED MODULE: ./src/effect/SSAO.glsl.js
-/* harmony default export */ var SSAO_glsl = ("@export ecgl.ssao.estimate\n\nuniform sampler2D depthTex;\n\nuniform sampler2D normalTex;\n\nuniform sampler2D noiseTex;\n\nuniform vec2 depthTexSize;\n\nuniform vec2 noiseTexSize;\n\nuniform mat4 projection;\n\nuniform mat4 projectionInv;\n\nuniform mat4 viewInverseTranspose;\n\nuniform vec3 kernel[KERNEL_SIZE];\n\nuniform float radius : 1;\n\nuniform float power : 1;\n\nuniform float bias: 1e-2;\n\nuniform float intensity: 1.0;\n\nvarying vec2 v_Texcoord;\n\nfloat ssaoEstimator(in vec3 originPos, in mat3 kernelBasis) {\n float occlusion = 0.0;\n\n for (int i = 0; i < KERNEL_SIZE; i++) {\n vec3 samplePos = kernel[i];\n#ifdef NORMALTEX_ENABLED\n samplePos = kernelBasis * samplePos;\n#endif\n samplePos = samplePos * radius + originPos;\n\n vec4 texCoord = projection * vec4(samplePos, 1.0);\n texCoord.xy /= texCoord.w;\n\n vec4 depthTexel = texture2D(depthTex, texCoord.xy * 0.5 + 0.5);\n\n float sampleDepth = depthTexel.r * 2.0 - 1.0;\n if (projection[3][3] == 0.0) {\n sampleDepth = projection[3][2] / (sampleDepth * projection[2][3] - projection[2][2]);\n }\n else {\n sampleDepth = (sampleDepth - projection[3][2]) / projection[2][2];\n }\n \n float rangeCheck = smoothstep(0.0, 1.0, radius / abs(originPos.z - sampleDepth));\n occlusion += rangeCheck * step(samplePos.z, sampleDepth - bias);\n }\n#ifdef NORMALTEX_ENABLED\n occlusion = 1.0 - occlusion / float(KERNEL_SIZE);\n#else\n occlusion = 1.0 - clamp((occlusion / float(KERNEL_SIZE) - 0.6) * 2.5, 0.0, 1.0);\n#endif\n return pow(occlusion, power);\n}\n\nvoid main()\n{\n\n vec4 depthTexel = texture2D(depthTex, v_Texcoord);\n\n#ifdef NORMALTEX_ENABLED\n vec4 tex = texture2D(normalTex, v_Texcoord);\n if (dot(tex.rgb, tex.rgb) == 0.0) {\n gl_FragColor = vec4(1.0);\n return;\n }\n vec3 N = tex.rgb * 2.0 - 1.0;\n N = (viewInverseTranspose * vec4(N, 0.0)).xyz;\n\n vec2 noiseTexCoord = depthTexSize / vec2(noiseTexSize) * v_Texcoord;\n vec3 rvec = texture2D(noiseTex, noiseTexCoord).rgb * 2.0 - 1.0;\n vec3 T = normalize(rvec - N * dot(rvec, N));\n vec3 BT = normalize(cross(N, T));\n mat3 kernelBasis = mat3(T, BT, N);\n#else\n if (depthTexel.r > 0.99999) {\n gl_FragColor = vec4(1.0);\n return;\n }\n mat3 kernelBasis;\n#endif\n\n float z = depthTexel.r * 2.0 - 1.0;\n\n vec4 projectedPos = vec4(v_Texcoord * 2.0 - 1.0, z, 1.0);\n vec4 p4 = projectionInv * projectedPos;\n\n vec3 position = p4.xyz / p4.w;\n\n float ao = ssaoEstimator(position, kernelBasis);\n ao = clamp(1.0 - (1.0 - ao) * intensity, 0.0, 1.0);\n gl_FragColor = vec4(vec3(ao), 1.0);\n}\n\n@end\n\n\n@export ecgl.ssao.blur\n\nuniform sampler2D ssaoTexture;\n\nuniform vec2 textureSize;\n\nvarying vec2 v_Texcoord;\n\nvoid main ()\n{\n\n vec2 texelSize = 1.0 / textureSize;\n\n float ao = 0.0;\n vec2 hlim = vec2(float(-BLUR_SIZE) * 0.5 + 0.5);\n float centerAo = texture2D(ssaoTexture, v_Texcoord).r;\n float weightAll = 0.0;\n float boxWeight = 1.0 / float(BLUR_SIZE) * float(BLUR_SIZE);\n for (int x = 0; x < BLUR_SIZE; x++) {\n for (int y = 0; y < BLUR_SIZE; y++) {\n vec2 coord = (vec2(float(x), float(y)) + hlim) * texelSize + v_Texcoord;\n float sampleAo = texture2D(ssaoTexture, coord).r;\n float closeness = 1.0 - distance(sampleAo, centerAo) / sqrt(3.0);\n float weight = boxWeight * closeness;\n ao += weight * sampleAo;\n weightAll += weight;\n }\n }\n\n gl_FragColor = vec4(vec3(clamp(ao / weightAll, 0.0, 1.0)), 1.0);\n}\n@end");
+/* harmony default export */ var SSAO_glsl = ("@export ecgl.ssao.estimate\n\nuniform sampler2D depthTex;\n\nuniform sampler2D normalTex;\n\nuniform sampler2D noiseTex;\n\nuniform vec2 depthTexSize;\n\nuniform vec2 noiseTexSize;\n\nuniform mat4 projection;\n\nuniform mat4 projectionInv;\n\nuniform mat4 viewInverseTranspose;\n\nuniform vec3 kernel[KERNEL_SIZE];\n\nuniform float radius : 1;\n\nuniform float power : 1;\n\nuniform float bias: 1e-2;\n\nuniform float intensity: 1.0;\n\nvarying vec2 v_Texcoord;\n\nfloat ssaoEstimator(in vec3 originPos, in mat3 kernelBasis) {\n float occlusion = 0.0;\n\n for (int i = 0; i < KERNEL_SIZE; i++) {\n vec3 samplePos = kernel[i];\n#ifdef NORMALTEX_ENABLED\n samplePos = kernelBasis * samplePos;\n#endif\n samplePos = samplePos * radius + originPos;\n\n vec4 texCoord = projection * vec4(samplePos, 1.0);\n texCoord.xy /= texCoord.w;\n\n vec4 depthTexel = texture2D(depthTex, texCoord.xy * 0.5 + 0.5);\n\n float sampleDepth = depthTexel.r * 2.0 - 1.0;\n if (projection[3][3] == 0.0) {\n sampleDepth = projection[3][2] / (sampleDepth * projection[2][3] - projection[2][2]);\n }\n else {\n sampleDepth = (sampleDepth - projection[3][2]) / projection[2][2];\n }\n \n float rangeCheck = smoothstep(0.0, 1.0, radius / abs(originPos.z - sampleDepth));\n occlusion += rangeCheck * step(samplePos.z, sampleDepth - bias);\n }\n#ifdef NORMALTEX_ENABLED\n occlusion = 1.0 - occlusion / float(KERNEL_SIZE);\n#else\n occlusion = 1.0 - clamp((occlusion / float(KERNEL_SIZE) - 0.6) * 2.5, 0.0, 1.0);\n#endif\n return pow(occlusion, power);\n}\n\nvoid main()\n{\n\n vec4 depthTexel = texture2D(depthTex, v_Texcoord);\n\n#ifdef NORMALTEX_ENABLED\n vec4 tex = texture2D(normalTex, v_Texcoord);\n if (dot(tex.rgb, tex.rgb) == 0.0) {\n gl_FragColor = vec4(1.0);\n return;\n }\n vec3 N = tex.rgb * 2.0 - 1.0;\n N = (viewInverseTranspose * vec4(N, 0.0)).xyz;\n\n vec2 noiseTexCoord = depthTexSize / vec2(noiseTexSize) * v_Texcoord;\n vec3 rvec = texture2D(noiseTex, noiseTexCoord).rgb * 2.0 - 1.0;\n vec3 T = normalize(rvec - N * dot(rvec, N));\n vec3 BT = normalize(cross(N, T));\n mat3 kernelBasis = mat3(T, BT, N);\n#else\n if (depthTexel.r > 0.99999) {\n gl_FragColor = vec4(1.0);\n return;\n }\n mat3 kernelBasis;\n#endif\n\n float z = depthTexel.r * 2.0 - 1.0;\n\n vec4 projectedPos = vec4(v_Texcoord * 2.0 - 1.0, z, 1.0);\n vec4 p4 = projectionInv * projectedPos;\n\n vec3 position = p4.xyz / p4.w;\n\n float ao = ssaoEstimator(position, kernelBasis);\n ao = clamp(1.0 - (1.0 - ao) * intensity, 0.0, 1.0);\n gl_FragColor = vec4(vec3(ao), 1.0);\n}\n\n@end\n\n\n@export ecgl.ssao.blur\n#define SHADER_NAME SSAO_BLUR\n\nuniform sampler2D ssaoTexture;\n\n#ifdef NORMALTEX_ENABLED\nuniform sampler2D normalTex;\n#endif\n\nvarying vec2 v_Texcoord;\n\nuniform vec2 textureSize;\nuniform float blurSize : 1.0;\n\nuniform int direction: 0.0;\n\n#ifdef DEPTHTEX_ENABLED\nuniform sampler2D depthTex;\nuniform mat4 projection;\nuniform float depthRange : 0.05;\n\nfloat getLinearDepth(vec2 coord)\n{\n float depth = texture2D(depthTex, coord).r * 2.0 - 1.0;\n return projection[3][2] / (depth * projection[2][3] - projection[2][2]);\n}\n#endif\n\nvoid main()\n{\n @import qtek.compositor.kernel.gaussian_9\n\n vec2 off = vec2(0.0);\n if (direction == 0) {\n off[0] = blurSize / textureSize.x;\n }\n else {\n off[1] = blurSize / textureSize.y;\n }\n\n vec2 coord = v_Texcoord;\n\n float sum = 0.0;\n float weightAll = 0.0;\n\n#ifdef NORMALTEX_ENABLED\n vec3 centerNormal = texture2D(normalTex, v_Texcoord).rgb * 2.0 - 1.0;\n#endif\n#if defined(DEPTHTEX_ENABLED)\n float centerDepth = getLinearDepth(v_Texcoord);\n#endif\n\n for (int i = 0; i < 9; i++) {\n vec2 coord = clamp(v_Texcoord + vec2(float(i) - 4.0) * off, vec2(0.0), vec2(1.0));\n\n float w = gaussianKernel[i];\n#ifdef NORMALTEX_ENABLED\n vec3 normal = texture2D(normalTex, coord).rgb * 2.0 - 1.0;\n w *= clamp(dot(normal, centerNormal), 0.0, 1.0);\n#endif\n#ifdef DEPTHTEX_ENABLED\n float d = getLinearDepth(coord);\n w *= (1.0 - smoothstep(abs(centerDepth - d) / depthRange, 0.0, 1.0));\n#endif\n\n weightAll += w;\n sum += texture2D(ssaoTexture, coord).r * w;\n }\n\n gl_FragColor = vec4(vec3(sum / weightAll), 1.0);\n}\n\n@end\n");
 
 // CONCATENATED MODULE: ./src/effect/SSAOPass.js
 
@@ -31930,14 +31930,13 @@ function SSAOPass(opt) {
     this._framebuffer = new src_FrameBuffer();
     
     this._ssaoTexture = new src_Texture2D();
-    this._targetTexture = new src_Texture2D();
+    this._blurTexture = new src_Texture2D();
 
     this._depthTex = opt.depthTexture;
     this._normalTex = opt.normalTexture;
 
     this.setNoiseSize(4);
     this.setKernelSize(opt.kernelSize || 12);
-    this.setParameter('blurSize', Math.round(opt.blurSize || 4));
     if (opt.radius != null) {
         this.setParameter('radius', opt.radius);
     }
@@ -31947,7 +31946,14 @@ function SSAOPass(opt) {
 
     if (!this._normalTex) {
         this._ssaoPass.material.shader.disableTexture('normalTex');
+        this._blurPass.material.shader.disableTexture('normalTex');
     }
+    if (!this._depthTex) {
+        this._blurPass.material.shader.disableTexture('depthTex');
+    }
+
+    this._blurPass.material.setUniform('normalTex', this._normalTex);
+    this._blurPass.material.setUniform('depthTex', this._depthTex);
 }
 
 SSAOPass.prototype.setDepthTexture = function (depthTex) {
@@ -31983,22 +31989,29 @@ SSAOPass.prototype.update = function (renderer, camera, frame) {
     ssaoPass.setUniform('viewInverseTranspose', viewInverseTranspose._array);
 
     var ssaoTexture = this._ssaoTexture;
-    var targetTexture = this._targetTexture;
+    var blurTexture = this._blurTexture;
 
     ssaoTexture.width = width;
     ssaoTexture.height = height;
-    targetTexture.width = width;
-    targetTexture.height = height;
-    
+    blurTexture.width = width;
+    blurTexture.height = height;
+
     this._framebuffer.attach(ssaoTexture);
     this._framebuffer.bind(renderer);
     renderer.gl.clearColor(1, 1, 1, 1);
     renderer.gl.clear(renderer.gl.COLOR_BUFFER_BIT);
     ssaoPass.render(renderer);
 
-    this._framebuffer.attach(targetTexture);
     blurPass.setUniform('textureSize', [width, height]);
-    blurPass.setUniform('ssaoTexture', this._ssaoTexture);
+    blurPass.setUniform('projection', camera.projectionMatrix._array);
+    this._framebuffer.attach(blurTexture);
+    blurPass.setUniform('direction', 0);
+    blurPass.setUniform('ssaoTexture', ssaoTexture);
+    blurPass.render(renderer);
+
+    this._framebuffer.attach(ssaoTexture);
+    blurPass.setUniform('direction', 1);
+    blurPass.setUniform('ssaoTexture', blurTexture);
     blurPass.render(renderer);
 
     this._framebuffer.unbind(renderer);
@@ -32009,7 +32022,7 @@ SSAOPass.prototype.update = function (renderer, camera, frame) {
 };
 
 SSAOPass.prototype.getTargetTexture = function () {
-    return this._targetTexture;
+    return this._ssaoTexture;
 }
 
 SSAOPass.prototype.setParameter = function (name, val) {
@@ -32018,9 +32031,6 @@ SSAOPass.prototype.setParameter = function (name, val) {
     }
     else if (name === 'kernelSize') {
         this.setKernelSize(val);
-    }
-    else if (name === 'blurSize') {
-        this._blurPass.material.shader.define('fragment', 'BLUR_SIZE', val);
     }
     else if (name === 'intensity') {
         this._ssaoPass.material.set('intensity', val);
@@ -32061,7 +32071,7 @@ SSAOPass.prototype.dispose = function (renderer) {
 
 /* harmony default export */ var effect_SSAOPass = (SSAOPass);
 // CONCATENATED MODULE: ./src/effect/SSR.glsl.js
-/* harmony default export */ var SSR_glsl = ("@export ecgl.ssr.main\n\n#define MAX_ITERATION 20;\n\nuniform sampler2D sourceTexture;\nuniform sampler2D gBufferTexture1;\nuniform sampler2D gBufferTexture2;\n\nuniform mat4 projection;\nuniform mat4 projectionInv;\nuniform mat4 viewInverseTranspose;\n\nuniform float maxRayDistance: 50;\n\nuniform float pixelStride: 16;\nuniform float pixelStrideZCutoff: 50; \nuniform float screenEdgeFadeStart: 0.9; \nuniform float eyeFadeStart : 0.2; uniform float eyeFadeEnd: 0.8; \nuniform float minGlossiness: 0.2; uniform float zThicknessThreshold: 10;\n\nuniform float nearZ;\nuniform vec2 viewportSize : VIEWPORT_SIZE;\n\nuniform float jitterOffset: 0;\n\nvarying vec2 v_Texcoord;\n\n#ifdef DEPTH_DECODE\n@import qtek.util.decode_float\n#endif\n\nfloat fetchDepth(sampler2D depthTexture, vec2 uv)\n{\n vec4 depthTexel = texture2D(depthTexture, uv);\n return depthTexel.r * 2.0 - 1.0;\n}\n\nfloat linearDepth(float depth)\n{\n if (projection[3][3] == 0.0) {\n return projection[3][2] / (depth * projection[2][3] - projection[2][2]);\n }\n else {\n return (depth - projection[3][2]) / projection[2][2];\n }\n}\n\nbool rayIntersectDepth(float rayZNear, float rayZFar, vec2 hitPixel)\n{\n if (rayZFar > rayZNear)\n {\n float t = rayZFar; rayZFar = rayZNear; rayZNear = t;\n }\n float cameraZ = linearDepth(fetchDepth(gBufferTexture2, hitPixel));\n return rayZFar <= cameraZ && rayZNear >= cameraZ - zThicknessThreshold;\n}\n\n\nbool traceScreenSpaceRay(\n vec3 rayOrigin, vec3 rayDir, float jitter,\n out vec2 hitPixel, out vec3 hitPoint, out float iterationCount\n)\n{\n float rayLength = ((rayOrigin.z + rayDir.z * maxRayDistance) > -nearZ)\n ? (-nearZ - rayOrigin.z) / rayDir.z : maxRayDistance;\n\n vec3 rayEnd = rayOrigin + rayDir * rayLength;\n\n vec4 H0 = projection * vec4(rayOrigin, 1.0);\n vec4 H1 = projection * vec4(rayEnd, 1.0);\n\n float k0 = 1.0 / H0.w, k1 = 1.0 / H1.w;\n\n vec3 Q0 = rayOrigin * k0, Q1 = rayEnd * k1;\n\n vec2 P0 = (H0.xy * k0 * 0.5 + 0.5) * viewportSize;\n vec2 P1 = (H1.xy * k1 * 0.5 + 0.5) * viewportSize;\n\n P1 += dot(P1 - P0, P1 - P0) < 0.0001 ? 0.01 : 0.0;\n vec2 delta = P1 - P0;\n\n bool permute = false;\n if (abs(delta.x) < abs(delta.y)) {\n permute = true;\n delta = delta.yx;\n P0 = P0.yx;\n P1 = P1.yx;\n }\n float stepDir = sign(delta.x);\n float invdx = stepDir / delta.x;\n\n vec3 dQ = (Q1 - Q0) * invdx;\n float dk = (k1 - k0) * invdx;\n\n vec2 dP = vec2(stepDir, delta.y * invdx);\n\n float strideScaler = 1.0 - min(1.0, -rayOrigin.z / pixelStrideZCutoff);\n float pixStride = 1.0 + strideScaler * pixelStride;\n\n dP *= pixStride; dQ *= pixStride; dk *= pixStride;\n\n vec4 pqk = vec4(P0, Q0.z, k0);\n vec4 dPQK = vec4(dP, dQ.z, dk);\n\n pqk += dPQK * jitter;\n float rayZFar = (dPQK.z * 0.5 + pqk.z) / (dPQK.w * 0.5 + pqk.w);\n float rayZNear;\n\n bool intersect = false;\n\n vec2 texelSize = 1.0 / viewportSize;\n\n iterationCount = 0.0;\n\n for (int i = 0; i < MAX_ITERATION; i++)\n {\n pqk += dPQK;\n\n rayZNear = rayZFar;\n rayZFar = (dPQK.z * 0.5 + pqk.z) / (dPQK.w * 0.5 + pqk.w);\n\n hitPixel = permute ? pqk.yx : pqk.xy;\n hitPixel *= texelSize;\n\n intersect = rayIntersectDepth(rayZNear, rayZFar, hitPixel);\n\n iterationCount += 1.0;\n\n if (intersect) {\n break;\n }\n }\n\n\n Q0.xy += dQ.xy * iterationCount;\n Q0.z = pqk.z;\n hitPoint = Q0 / pqk.w;\n\n return intersect;\n}\n\nfloat calculateAlpha(\n float iterationCount, float reflectivity,\n vec2 hitPixel, vec3 hitPoint, float dist, vec3 rayDir\n)\n{\n float alpha = clamp(reflectivity, 0.0, 1.0);\n alpha *= 1.0 - (iterationCount / float(MAX_ITERATION));\n vec2 hitPixelNDC = hitPixel * 2.0 - 1.0;\n float maxDimension = min(1.0, max(abs(hitPixelNDC.x), abs(hitPixelNDC.y)));\n alpha *= 1.0 - max(0.0, maxDimension - screenEdgeFadeStart) / (1.0 - screenEdgeFadeStart);\n\n float _eyeFadeStart = eyeFadeStart;\n float _eyeFadeEnd = eyeFadeEnd;\n if (_eyeFadeStart > _eyeFadeEnd) {\n float tmp = _eyeFadeEnd;\n _eyeFadeEnd = _eyeFadeStart;\n _eyeFadeStart = tmp;\n }\n\n float eyeDir = clamp(rayDir.z, _eyeFadeStart, _eyeFadeEnd);\n alpha *= 1.0 - (eyeDir - _eyeFadeStart) / (_eyeFadeEnd - _eyeFadeStart);\n\n alpha *= 1.0 - clamp(dist / maxRayDistance, 0.0, 1.0);\n\n return alpha;\n}\n\n@import qtek.util.rand\n\n@import qtek.util.rgbm\n\nvoid main()\n{\n vec4 normalAndGloss = texture2D(gBufferTexture1, v_Texcoord);\n\n if (dot(normalAndGloss.rgb, vec3(1.0)) == 0.0) {\n discard;\n }\n\n float g = normalAndGloss.a;\n if (g <= minGlossiness) {\n discard;\n }\n\n float reflectivity = (g - minGlossiness) / (1.0 - minGlossiness);\n\n vec3 N = normalAndGloss.rgb * 2.0 - 1.0;\n N = normalize((viewInverseTranspose * vec4(N, 0.0)).xyz);\n\n vec4 projectedPos = vec4(v_Texcoord * 2.0 - 1.0, fetchDepth(gBufferTexture2, v_Texcoord), 1.0);\n vec4 pos = projectionInv * projectedPos;\n vec3 rayOrigin = pos.xyz / pos.w;\n\n vec3 rayDir = normalize(reflect(normalize(rayOrigin), N));\n vec2 hitPixel;\n vec3 hitPoint;\n float iterationCount;\n\n vec2 uv2 = v_Texcoord * viewportSize;\n float jitter = rand(fract(v_Texcoord + jitterOffset));\n\n bool intersect = traceScreenSpaceRay(rayOrigin, rayDir, jitter, hitPixel, hitPoint, iterationCount);\n\n float dist = distance(rayOrigin, hitPoint);\n\n float alpha = calculateAlpha(iterationCount, reflectivity, hitPixel, hitPoint, dist, rayDir) * float(intersect);\n\n vec3 hitNormal = texture2D(gBufferTexture1, hitPixel).rgb * 2.0 - 1.0;\n hitNormal = normalize((viewInverseTranspose * vec4(hitNormal, 0.0)).xyz);\n\n if (dot(hitNormal, rayDir) >= 0.0) {\n discard;\n }\n\n \n if (!intersect) {\n discard;\n }\n vec4 color = decodeHDR(texture2D(sourceTexture, hitPixel));\n gl_FragColor = encodeHDR(vec4(color.rgb * alpha, color.a));\n}\n@end\n\n@export ecgl.ssr.blur\n\nuniform sampler2D texture;\nuniform sampler2D gBufferTexture1;\n\nvarying vec2 v_Texcoord;\n\nuniform vec2 textureSize;\nuniform float blurSize : 4.0;\n\n#ifdef BLEND\nuniform sampler2D sourceTexture;\n#endif\n\n@import qtek.util.rgbm\n\n\nvoid main()\n{\n @import qtek.compositor.kernel.gaussian_13\n\n vec4 centerNTexel = texture2D(gBufferTexture1, v_Texcoord);\n float g = centerNTexel.a;\n float maxBlurSize = clamp(1.0 - g + 0.1, 0.0, 1.0) * blurSize;\n#ifdef VERTICAL\n vec2 off = vec2(0.0, maxBlurSize / textureSize.y);\n#else\n vec2 off = vec2(maxBlurSize / textureSize.x, 0.0);\n#endif\n\n vec2 coord = v_Texcoord;\n\n vec4 sum = vec4(0.0);\n float weightAll = 0.0;\n\n vec3 cN = centerNTexel.rgb * 2.0 - 1.0;\n for (int i = 0; i < 13; i++) {\n vec2 coord = clamp((float(i) - 6.0) * off + v_Texcoord, vec2(0.0), vec2(1.0));\n float w = gaussianKernel[i] * clamp(dot(cN, texture2D(gBufferTexture1, coord).rgb * 2.0 - 1.0), 0.0, 1.0);\n weightAll += w;\n sum += decodeHDR(texture2D(texture, coord)) * w;\n }\n\n#ifdef BLEND\n gl_FragColor = encodeHDR(\n sum / weightAll + decodeHDR(texture2D(sourceTexture, v_Texcoord))\n );\n#else\n gl_FragColor = encodeHDR(sum / weightAll);\n#endif\n}\n\n@end");
+/* harmony default export */ var SSR_glsl = ("@export ecgl.ssr.main\n\n#define MAX_ITERATION 20;\n\nuniform sampler2D sourceTexture;\nuniform sampler2D gBufferTexture1;\nuniform sampler2D gBufferTexture2;\n\nuniform mat4 projection;\nuniform mat4 projectionInv;\nuniform mat4 viewInverseTranspose;\n\nuniform float maxRayDistance: 50;\n\nuniform float pixelStride: 16;\nuniform float pixelStrideZCutoff: 50; \nuniform float screenEdgeFadeStart: 0.9; \nuniform float eyeFadeStart : 0.2; uniform float eyeFadeEnd: 0.8; \nuniform float minGlossiness: 0.2; uniform float zThicknessThreshold: 10;\n\nuniform float nearZ;\nuniform vec2 viewportSize : VIEWPORT_SIZE;\n\nuniform float jitterOffset: 0;\n\nvarying vec2 v_Texcoord;\n\n#ifdef DEPTH_DECODE\n@import qtek.util.decode_float\n#endif\n\nfloat fetchDepth(sampler2D depthTexture, vec2 uv)\n{\n vec4 depthTexel = texture2D(depthTexture, uv);\n return depthTexel.r * 2.0 - 1.0;\n}\n\nfloat linearDepth(float depth)\n{\n if (projection[3][3] == 0.0) {\n return projection[3][2] / (depth * projection[2][3] - projection[2][2]);\n }\n else {\n return (depth - projection[3][2]) / projection[2][2];\n }\n}\n\nbool rayIntersectDepth(float rayZNear, float rayZFar, vec2 hitPixel)\n{\n if (rayZFar > rayZNear)\n {\n float t = rayZFar; rayZFar = rayZNear; rayZNear = t;\n }\n float cameraZ = linearDepth(fetchDepth(gBufferTexture2, hitPixel));\n return rayZFar <= cameraZ && rayZNear >= cameraZ - zThicknessThreshold;\n}\n\n\nbool traceScreenSpaceRay(\n vec3 rayOrigin, vec3 rayDir, float jitter,\n out vec2 hitPixel, out vec3 hitPoint, out float iterationCount\n)\n{\n float rayLength = ((rayOrigin.z + rayDir.z * maxRayDistance) > -nearZ)\n ? (-nearZ - rayOrigin.z) / rayDir.z : maxRayDistance;\n\n vec3 rayEnd = rayOrigin + rayDir * rayLength;\n\n vec4 H0 = projection * vec4(rayOrigin, 1.0);\n vec4 H1 = projection * vec4(rayEnd, 1.0);\n\n float k0 = 1.0 / H0.w, k1 = 1.0 / H1.w;\n\n vec3 Q0 = rayOrigin * k0, Q1 = rayEnd * k1;\n\n vec2 P0 = (H0.xy * k0 * 0.5 + 0.5) * viewportSize;\n vec2 P1 = (H1.xy * k1 * 0.5 + 0.5) * viewportSize;\n\n P1 += dot(P1 - P0, P1 - P0) < 0.0001 ? 0.01 : 0.0;\n vec2 delta = P1 - P0;\n\n bool permute = false;\n if (abs(delta.x) < abs(delta.y)) {\n permute = true;\n delta = delta.yx;\n P0 = P0.yx;\n P1 = P1.yx;\n }\n float stepDir = sign(delta.x);\n float invdx = stepDir / delta.x;\n\n vec3 dQ = (Q1 - Q0) * invdx;\n float dk = (k1 - k0) * invdx;\n\n vec2 dP = vec2(stepDir, delta.y * invdx);\n\n float strideScaler = 1.0 - min(1.0, -rayOrigin.z / pixelStrideZCutoff);\n float pixStride = 1.0 + strideScaler * pixelStride;\n\n dP *= pixStride; dQ *= pixStride; dk *= pixStride;\n\n vec4 pqk = vec4(P0, Q0.z, k0);\n vec4 dPQK = vec4(dP, dQ.z, dk);\n\n pqk += dPQK * jitter;\n float rayZFar = (dPQK.z * 0.5 + pqk.z) / (dPQK.w * 0.5 + pqk.w);\n float rayZNear;\n\n bool intersect = false;\n\n vec2 texelSize = 1.0 / viewportSize;\n\n iterationCount = 0.0;\n\n for (int i = 0; i < MAX_ITERATION; i++)\n {\n pqk += dPQK;\n\n rayZNear = rayZFar;\n rayZFar = (dPQK.z * 0.5 + pqk.z) / (dPQK.w * 0.5 + pqk.w);\n\n hitPixel = permute ? pqk.yx : pqk.xy;\n hitPixel *= texelSize;\n\n intersect = rayIntersectDepth(rayZNear, rayZFar, hitPixel);\n\n iterationCount += 1.0;\n\n if (intersect) {\n break;\n }\n }\n\n\n Q0.xy += dQ.xy * iterationCount;\n Q0.z = pqk.z;\n hitPoint = Q0 / pqk.w;\n\n return intersect;\n}\n\nfloat calculateAlpha(\n float iterationCount, float reflectivity,\n vec2 hitPixel, vec3 hitPoint, float dist, vec3 rayDir\n)\n{\n float alpha = clamp(reflectivity, 0.0, 1.0);\n alpha *= 1.0 - (iterationCount / float(MAX_ITERATION));\n vec2 hitPixelNDC = hitPixel * 2.0 - 1.0;\n float maxDimension = min(1.0, max(abs(hitPixelNDC.x), abs(hitPixelNDC.y)));\n alpha *= 1.0 - max(0.0, maxDimension - screenEdgeFadeStart) / (1.0 - screenEdgeFadeStart);\n\n float _eyeFadeStart = eyeFadeStart;\n float _eyeFadeEnd = eyeFadeEnd;\n if (_eyeFadeStart > _eyeFadeEnd) {\n float tmp = _eyeFadeEnd;\n _eyeFadeEnd = _eyeFadeStart;\n _eyeFadeStart = tmp;\n }\n\n float eyeDir = clamp(rayDir.z, _eyeFadeStart, _eyeFadeEnd);\n alpha *= 1.0 - (eyeDir - _eyeFadeStart) / (_eyeFadeEnd - _eyeFadeStart);\n\n alpha *= 1.0 - clamp(dist / maxRayDistance, 0.0, 1.0);\n\n return alpha;\n}\n\n@import qtek.util.rand\n\n@import qtek.util.rgbm\n\nvoid main()\n{\n vec4 normalAndGloss = texture2D(gBufferTexture1, v_Texcoord);\n\n if (dot(normalAndGloss.rgb, vec3(1.0)) == 0.0) {\n discard;\n }\n\n float g = normalAndGloss.a;\n if (g <= minGlossiness) {\n discard;\n }\n\n float reflectivity = (g - minGlossiness) / (1.0 - minGlossiness);\n\n vec3 N = normalAndGloss.rgb * 2.0 - 1.0;\n N = normalize((viewInverseTranspose * vec4(N, 0.0)).xyz);\n\n vec4 projectedPos = vec4(v_Texcoord * 2.0 - 1.0, fetchDepth(gBufferTexture2, v_Texcoord), 1.0);\n vec4 pos = projectionInv * projectedPos;\n vec3 rayOrigin = pos.xyz / pos.w;\n\n vec3 rayDir = normalize(reflect(normalize(rayOrigin), N));\n vec2 hitPixel;\n vec3 hitPoint;\n float iterationCount;\n\n vec2 uv2 = v_Texcoord * viewportSize;\n float jitter = rand(fract(v_Texcoord + jitterOffset));\n\n bool intersect = traceScreenSpaceRay(rayOrigin, rayDir, jitter, hitPixel, hitPoint, iterationCount);\n\n float dist = distance(rayOrigin, hitPoint);\n\n float alpha = calculateAlpha(iterationCount, reflectivity, hitPixel, hitPoint, dist, rayDir) * float(intersect);\n\n vec3 hitNormal = texture2D(gBufferTexture1, hitPixel).rgb * 2.0 - 1.0;\n hitNormal = normalize((viewInverseTranspose * vec4(hitNormal, 0.0)).xyz);\n\n if (dot(hitNormal, rayDir) >= 0.0) {\n discard;\n }\n\n \n if (!intersect) {\n discard;\n }\n vec4 color = decodeHDR(texture2D(sourceTexture, hitPixel));\n gl_FragColor = encodeHDR(vec4(color.rgb * alpha, color.a));\n}\n@end\n\n@export ecgl.ssr.blur\n\nuniform sampler2D texture;\nuniform sampler2D gBufferTexture1;\nuniform sampler2D gBufferTexture2;\nuniform mat4 projection;\nuniform float depthRange : 0.05;\n\nvarying vec2 v_Texcoord;\n\nuniform vec2 textureSize;\nuniform float blurSize : 4.0;\n\n#ifdef BLEND\n #ifdef SSAOTEX_ENABLED\nuniform sampler2D ssaoTex;\n #endif\nuniform sampler2D sourceTexture;\n#endif\n\nfloat getLinearDepth(vec2 coord)\n{\n float depth = texture2D(gBufferTexture2, coord).r * 2.0 - 1.0;\n return projection[3][2] / (depth * projection[2][3] - projection[2][2]);\n}\n\n@import qtek.util.rgbm\n\n\nvoid main()\n{\n @import qtek.compositor.kernel.gaussian_13\n\n vec4 centerNTexel = texture2D(gBufferTexture1, v_Texcoord);\n float g = centerNTexel.a;\n float maxBlurSize = clamp(1.0 - g + 0.1, 0.0, 1.0) * blurSize;\n#ifdef VERTICAL\n vec2 off = vec2(0.0, maxBlurSize / textureSize.y);\n#else\n vec2 off = vec2(maxBlurSize / textureSize.x, 0.0);\n#endif\n\n vec2 coord = v_Texcoord;\n\n vec4 sum = vec4(0.0);\n float weightAll = 0.0;\n\n vec3 cN = centerNTexel.rgb * 2.0 - 1.0;\n float cD = getLinearDepth(v_Texcoord);\n for (int i = 0; i < 13; i++) {\n vec2 coord = clamp((float(i) - 6.0) * off + v_Texcoord, vec2(0.0), vec2(1.0));\n float w = gaussianKernel[i]\n * clamp(dot(cN, texture2D(gBufferTexture1, coord).rgb * 2.0 - 1.0), 0.0, 1.0);\n float d = getLinearDepth(coord);\n w *= (1.0 - smoothstep(abs(cD - d) / depthRange, 0.0, 1.0));\n\n weightAll += w;\n sum += decodeHDR(texture2D(texture, coord)) * w;\n }\n\n#ifdef BLEND\n float aoFactor = 1.0;\n #ifdef SSAOTEX_ENABLED\n aoFactor = texture2D(ssaoTex, v_Texcoord).r;\n #endif\n gl_FragColor = encodeHDR(\n sum / weightAll * aoFactor + decodeHDR(texture2D(sourceTexture, v_Texcoord))\n );\n#else\n gl_FragColor = encodeHDR(sum / weightAll);\n#endif\n}\n\n@end");
 
 // CONCATENATED MODULE: ./src/effect/SSRPass.js
 
@@ -32096,7 +32106,10 @@ function SSRPass(opt) {
     this._ssrPass.setUniform('gBufferTexture2', opt.depthTexture);
 
     this._blurPass1.setUniform('gBufferTexture1', opt.normalTexture);
+    this._blurPass1.setUniform('gBufferTexture2', opt.depthTexture);
+    
     this._blurPass2.setUniform('gBufferTexture1', opt.normalTexture);
+    this._blurPass2.setUniform('gBufferTexture2', opt.depthTexture);
 
     this._blurPass2.material.shader.define('fragment', 'VERTICAL');
     this._blurPass2.material.shader.define('fragment', 'BLEND');
@@ -32140,6 +32153,9 @@ SSRPass.prototype.update = function (renderer, camera, sourceTexture, frame) {
     blurPass2.setUniform('textureSize', textureSize);
     blurPass2.setUniform('sourceTexture', sourceTexture);
 
+    blurPass1.setUniform('projection', camera.projectionMatrix._array);
+    blurPass2.setUniform('projection', camera.projectionMatrix._array);
+
     frameBuffer.attach(texture2);
     frameBuffer.bind(renderer);
     ssrPass.render(renderer);
@@ -32164,6 +32180,17 @@ SSRPass.prototype.setParameter = function (name, val) {
     }
     else {
         this._ssrPass.setUniform(name, val);
+    }
+};
+
+SSRPass.prototype.setSSAOTexture = function (texture) {
+    var blendPass = this._blurPass2;
+    if (texture) {
+        blendPass.material.shader.enableTexture('ssaoTex');
+        blendPass.material.set('ssaoTex', texture);
+    }
+    else {
+        blendPass.material.shader.disableTexture('ssaoTex');
     }
 };
 
@@ -33182,7 +33209,7 @@ function EffectCompositor() {
         depthTexture: this._normalPass.getDepthTexture()
     };
     this._ssaoPass = new effect_SSAOPass(gBufferObj);
-    this._ssrPass = new effect_SSRPass(gBufferObj)
+    this._ssrPass = new effect_SSRPass(gBufferObj);
     this._edgePass = new effect_EdgePass(gBufferObj);
 }
 
@@ -33519,6 +33546,10 @@ EffectCompositor.prototype.composite = function (renderer, camera, framebuffer, 
     if (this._enableSSR) {
         this._ssrPass.update(renderer, camera, sourceTexture, frame);
         targetTexture = this._ssrPass.getTargetTexture();
+
+        this._ssrPass.setSSAOTexture(
+            this._enableSSAO ? this._ssaoPass.getTargetTexture() : null
+        );
     }
     this._sourceNode.texture = targetTexture;
 
@@ -34479,9 +34510,6 @@ external__echarts__default.a.registerAction({
             show: false,
             color: '#aaa'
         },
-
-        // If enable instancing if it's too much
-        instancing: false,
 
         shading: 'lambert',
 
@@ -35696,7 +35724,6 @@ LabelsBuilder.prototype.updateLabels = function (highlightDataIndices) {
 // CONCATENATED MODULE: ./src/component/common/Geo3DBuilder.js
 
 
-// import Triangulation from '../../util/Triangulation';
 
 
 
@@ -35718,12 +35745,9 @@ function Geo3DBuilder(api) {
     // Cache triangulation result
     this._triangulationResults = {};
 
-    // this._triangulator = new Triangulation();
-
     this._shadersMap = util_graphicGL.COMMON_SHADERS.reduce(function (obj, shaderName) {
         obj[shaderName] = util_graphicGL.createShader('ecgl.' + shaderName);
         obj[shaderName].define('fragment', 'DOUBLE_SIDED');
-        // obj[shaderName].define('both', 'WIREFRAME_TRIANGLE');
         return obj;
     }, {});
 
@@ -35762,14 +35786,8 @@ Geo3DBuilder.prototype = {
     extrudeY: true,
 
     update: function (componentModel, geo3D, ecModel, api) {
-        var enableInstancing = componentModel.get('instancing');
-
         this._triangulation(geo3D);
-        if (
-            geo3D.map !== this._currentMap
-            || (enableInstancing && !this._polygonMesh)
-            || (!enableInstancing && !this._polygonMeshesMap)
-        ) {
+        if (geo3D.map !== this._currentMap) {
             this._currentMap = geo3D.map;
 
             // Reset meshes
@@ -35782,13 +35800,11 @@ Geo3DBuilder.prototype = {
 
         var data = componentModel.getData();
 
-        if (enableInstancing) {
-            this._prepareInstancingMesh(componentModel, geo3D, shader, api);
-        }
+        this._prepareMesh(componentModel, geo3D, shader, api);
 
         this.rootNode.updateWorldTransform();
         
-        this._updateRegionMesh(componentModel, geo3D, shader, api, enableInstancing);
+        this._updateRegionMesh(componentModel, geo3D, shader, api);
 
         this._updateGroundPlane(componentModel, geo3D, api);
 
@@ -35812,14 +35828,19 @@ Geo3DBuilder.prototype = {
         this._lastHoverDataIndex = 0;
     },
 
-    _prepareInstancingMesh: function (componentModel, geo3D, shader, api) {
+    _prepareMesh: function (componentModel, geo3D, shader, api) {
         var polygonVertexCount = 0;
         var polygonTriangleCount = 0;
+        var linesVertexCount = 0;
+        var linesTriangleCount = 0;
         // TODO Lines
         geo3D.regions.forEach(function (region) {
-            var info = this._getRegionPolygonGeoInfo(region);
-            polygonVertexCount += info.vertexCount;
-            polygonTriangleCount += info.triangleCount;
+            var polyInfo = this._getRegionPolygonGeoInfo(region);
+            var lineInfo = this._getRegionLinesGeoInfo(region, componentModel, this._linesMesh.geometry);
+            polygonVertexCount += polyInfo.vertexCount;
+            polygonTriangleCount += polyInfo.triangleCount;
+            linesVertexCount += lineInfo.vertexCount;
+            linesTriangleCount += lineInfo.triangleCount;
         }, this);
 
         var polygonMesh = this._polygonMesh;
@@ -35827,11 +35848,16 @@ Geo3DBuilder.prototype = {
         ['position', 'normal', 'texcoord0', 'color'].forEach(function (attrName) {
             polygonGeo.attributes[attrName].init(polygonVertexCount);
         });
-
         polygonGeo.indices = polygonVertexCount > 0xffff ? new Uint32Array(polygonTriangleCount * 3) : new Uint16Array(polygonTriangleCount * 3);
 
         if (polygonMesh.material.shader !== shader) {
             polygonMesh.material.attachShader(shader, true);
+        }
+
+        if (linesVertexCount > 0) {
+            this._linesMesh.geometry.resetOffset();
+            this._linesMesh.geometry.setVertexCount(linesVertexCount);
+            this._linesMesh.geometry.setTriangleCount(linesTriangleCount);
         }
 
         // Indexing data index from vertex index.
@@ -35840,17 +35866,20 @@ Geo3DBuilder.prototype = {
         this._vertexRangeOfDataIndex = new Uint32Array(geo3D.regions.length * 2);
     },
 
-    _updateRegionMesh: function (componentModel, geo3D, shader, api, instancing) {
+    _shouldRegionUpdate: true,
+
+    _updateRegionMesh: function (componentModel, geo3D, shader, api) {
+
+        if (!this._shouldRegionUpdate) return;
+        this._shouldRegionUpdate = false;
 
         var data = componentModel.getData();
 
         var vertexOffset = 0;
         var triangleOffset = 0;
 
-        if (instancing) {
-            // Materials configurations.
-            util_graphicGL.setMaterialFromModel(shader.__shading, this._polygonMesh.material, componentModel, api);
-        }
+        // Materials configurations.
+        util_graphicGL.setMaterialFromModel(shader.__shading, this._polygonMesh.material, componentModel, api);
         var hasTranparentRegion = false;
 
         var nameIndicesMap = {};
@@ -35858,17 +35887,18 @@ Geo3DBuilder.prototype = {
             nameIndicesMap[data.getName(idx)] = idx;
         });
 
+        var polygonMesh = this._polygonMesh;
+        var linesMesh = this._linesMesh;
+        if (polygonMesh.material.shader !== shader) {
+            polygonMesh.material.attachShader(shader, true);
+        }
+
         geo3D.regions.forEach(function (region) {
             var dataIndex = nameIndicesMap[region.name];
             if (dataIndex == null) {
                 dataIndex = -1;
             }
 
-            var polygonMesh = instancing ? this._polygonMesh : this._polygonMeshesMap[region.name];
-            var linesMesh = instancing ? this._linesMesh : this._linesMeshesMap[region.name];
-            if (polygonMesh.material.shader !== shader) {
-                polygonMesh.material.attachShader(shader, true);
-            }
             // Get bunch of visual properties.
             var regionModel = componentModel.getRegionModel(region.name);
             var itemStyleModel = regionModel.getModel('itemStyle');
@@ -35891,97 +35921,55 @@ Geo3DBuilder.prototype = {
             borderColor[3] *= opacity;
 
             var isTransparent = color[3] < 0.99;
-            if (!instancing) {
-                // Materials configurations.
-                util_graphicGL.setMaterialFromModel(shader.__shading, polygonMesh.material, regionModel, api);
-                polygonMesh.material.set({ color: color });
-                polygonMesh.material.transparent = isTransparent;
-                polygonMesh.material.depthMask = !isTransparent;
-            }
-            else {
-                polygonMesh.material.set('color', [1,1,1,1]);
-            }
+            
+            polygonMesh.material.set('color', [1,1,1,1]);
             hasTranparentRegion = hasTranparentRegion || isTransparent;
 
             var regionHeight = util_retrieve.firstNotNull(regionModel.get('height', true), componentModel.get('regionHeight'));
 
-            if (instancing) {
-                var newOffsets = this._updatePolygonGeometry(
-                    componentModel, polygonMesh.geometry, region, regionHeight,
-                    vertexOffset, triangleOffset, color
-                );
+            var newOffsets = this._updatePolygonGeometry(
+                componentModel, polygonMesh.geometry, region, regionHeight,
+                vertexOffset, triangleOffset, color
+            );
 
-                for (var i = vertexOffset; i < newOffsets.vertexOffset; i++) {
-                    this._dataIndexOfVertex[i] = dataIndex;
-                }
-                this._vertexRangeOfDataIndex[dataIndex * 2] = vertexOffset;
-                this._vertexRangeOfDataIndex[dataIndex * 2 + 1] = newOffsets.vertexOffset;
+            for (var i = vertexOffset; i < newOffsets.vertexOffset; i++) {
+                this._dataIndexOfVertex[i] = dataIndex;
+            }
+            this._vertexRangeOfDataIndex[dataIndex * 2] = vertexOffset;
+            this._vertexRangeOfDataIndex[dataIndex * 2 + 1] = newOffsets.vertexOffset;
 
-                vertexOffset = newOffsets.vertexOffset;
-                triangleOffset = newOffsets.triangleOffset;
-            }
-            else {
-                this._updatePolygonGeometry(
-                    componentModel, polygonMesh.geometry, region, regionHeight
-                );
-            }
+            vertexOffset = newOffsets.vertexOffset;
+            triangleOffset = newOffsets.triangleOffset;
 
             // Update lines.
-            // TODO INSTANCING LINES
             var lineWidth = itemStyleModel.get('borderWidth');
             var hasLine = lineWidth > 0;
-            if (!instancing) {
-                if (hasLine) {
-                    lineWidth *= api.getDevicePixelRatio();
-                    this._updateLinesGeometry(
-                        linesMesh.geometry, region, regionHeight, lineWidth, geo3D.transform
-                    );
-                }
-                linesMesh.invisible = !hasLine;
-                linesMesh.material.set({
-                    color: borderColor
-                });
+            if (hasLine) {
+                lineWidth *= api.getDevicePixelRatio();
+                this._updateLinesGeometry(
+                    linesMesh.geometry, region, regionHeight, lineWidth, geo3D.transform
+                );
             }
-
-            if (!instancing) {
-                // Move regions to center so they can be sorted right when material is transparent.
-                this._moveRegionToCenter(polygonMesh, linesMesh, hasLine);
-                // Bind events.
-                if (componentModel.type === 'geo3D') {
-                    polygonMesh.eventData = {
-                        name: region.name
-                    };
-                }
-                else {
-                    polygonMesh.dataIndex = dataIndex;
-                    polygonMesh.seriesIndex = componentModel.seriesIndex;
-                }
-                polygonMesh.on('mouseover', this._onmouseover, this);
-                polygonMesh.on('mouseout', this._onmouseout, this);
-
-                // Update tangents
-                if (polygonMesh.material.get('normalMap')) {
-                    polygonMesh.geometry.generateTangents();
-                }
-            }
+            linesMesh.invisible = !hasLine;
+            linesMesh.material.set({
+                color: borderColor
+            });
         }, this);
 
-        if (instancing) {
-            var polygonMesh = this._polygonMesh;
-            polygonMesh.material.transparent = hasTranparentRegion;
-            polygonMesh.material.depthMask = !hasTranparentRegion;
-            polygonMesh.geometry.updateBoundingBox();
+        var polygonMesh = this._polygonMesh;
+        polygonMesh.material.transparent = hasTranparentRegion;
+        polygonMesh.material.depthMask = !hasTranparentRegion;
+        polygonMesh.geometry.updateBoundingBox();
 
-            // Update tangents
-            if (polygonMesh.material.get('normalMap')) {
-                polygonMesh.geometry.generateTangents();
-            }
-
-            polygonMesh.seriesIndex = componentModel.seriesIndex;
-
-            polygonMesh.on('mousemove', this._onmousemove, this);
-            polygonMesh.on('mouseout', this._onmouseout, this);
+        // Update tangents
+        if (polygonMesh.material.get('normalMap')) {
+            polygonMesh.geometry.generateTangents();
         }
+
+        polygonMesh.seriesIndex = componentModel.seriesIndex;
+
+        polygonMesh.on('mousemove', this._onmousemove, this);
+        polygonMesh.on('mouseout', this._onmouseout, this);
     },
 
     _updateDebugWireframe: function (componentModel, geo3D) {
@@ -36041,24 +36029,9 @@ Geo3DBuilder.prototype = {
 
     _onmouseout: function (e) {
         if (e.target) {
-            // Instancing
-            if (this._polygonMesh) {
-                this.downplay(this._lastHoverDataIndex);
-                this._lastHoverDataIndex = -1;
-                this._polygonMesh.dataIndex = -1;
-            }
-            else {
-                var dataIndex = e.target.eventData
-                    ? this._data.indexOfName(e.target.eventData.name)
-                    : e.target.dataIndex;
-                if (dataIndex != null) {
-                    this.downplay(dataIndex);
-                    // TODO Merge with onmouseover
-                    if (!e.relatedTarget) {
-                        this._labelsBuilder.updateLabels();
-                    }
-                }
-            }
+            this.downplay(this._lastHoverDataIndex);
+            this._lastHoverDataIndex = -1;
+            this._polygonMesh.dataIndex = -1;
         }
     },
 
@@ -36111,46 +36084,26 @@ Geo3DBuilder.prototype = {
             return mesh;
         }
 
-        function createLinesMesh(shader) {
-            return new util_graphicGL.Mesh({
-                material: new util_graphicGL.Material({
-                    shader: shader
-                }),
-                castShadow: false,
-                $ignorePicking: true,
-                geometry: new Lines3D({
-                    useNativeLine: false
-                })
-            });
-        }
+        var polygonMesh = createPolygonMesh();
+        
+        var linesMesh = new util_graphicGL.Mesh({
+            material: new util_graphicGL.Material({
+                shader: this._linesShader
+            }),
+            castShadow: false,
+            $ignorePicking: true,
+            geometry: new Lines3D({
+                useNativeLine: false
+            })
+        });
 
-        if (!componentModel.get('instancing')) {
-            var polygonMeshesMap = {};
-            var linesMeshesMap = {};
-            geo3D.regions.forEach(function (region) {
-                polygonMeshesMap[region.name] = createPolygonMesh();
-                linesMeshesMap[region.name] = createLinesMesh(this._linesShader);
+        this.rootNode.add(polygonMesh);
+        this.rootNode.add(linesMesh);
 
-                this.rootNode.add(polygonMeshesMap[region.name]);
-                this.rootNode.add(linesMeshesMap[region.name]);
-            }, this);
-            this._polygonMeshesMap = polygonMeshesMap;
-            this._linesMeshesMap = linesMeshesMap;
-        }
-        else {
-            var polygonMesh = createPolygonMesh();
-            var linesMesh = createLinesMesh(this._linesShader);
-            this.rootNode.add(polygonMesh);
-            this.rootNode.add(linesMesh);
+        polygonMesh.material.shader.define('both', 'VERTEX_COLOR');
 
-            polygonMesh.material.shader.define('both', 'VERTEX_COLOR');
-
-            this._polygonMesh = polygonMesh;
-            this._linesMesh = linesMesh;
-
-            this._polygonMeshesMap = null;
-            this._linesMeshesMap = null;
-        }
+        this._polygonMesh = polygonMesh;
+        this._linesMesh = linesMesh;
 
         this.rootNode.add(this._groundMesh);
     },
@@ -36275,22 +36228,9 @@ Geo3DBuilder.prototype = {
         var hasColor = colorAttr.value && color;
 
         var indices = geometry.indices;
-        var instancing = vertexOffset != null;
 
         var extrudeCoordIndex = this.extrudeY ? 1 : 2;
         var sideCoordIndex = this.extrudeY ? 2 : 1;
-
-        if (!instancing) {
-            var geoInfo = this._getRegionPolygonGeoInfo(region);
-            vertexOffset = triangleOffset = 0;
-
-            positionAttr.init(geoInfo.vertexCount);
-            normalAttr.init(geoInfo.vertexCount);
-            texcoordAttr.init(geoInfo.vertexCount);
-            indices = geometry.indices = geoInfo.vertexCount > 0xffff
-                ? new Uint32Array(geoInfo.triangleCount * 3)
-                : new Uint16Array(geoInfo.triangleCount * 3);
-        }
 
         var scale = [
             this.rootNode.worldTransform.x.len(),
@@ -36412,10 +36352,6 @@ Geo3DBuilder.prototype = {
             }
         }
 
-        if (!instancing) {
-            geometry.updateBoundingBox();
-        }
-
         geometry.dirty();
 
         return {
@@ -36424,19 +36360,26 @@ Geo3DBuilder.prototype = {
         };
     },
 
-    _getRegionLinesGeoInfo: function (region, geometry) {
+    _getRegionLinesGeoInfo: function (region, componentModel, geometry) {
         var vertexCount = 0;
         var triangleCount = 0;
-        region.geometries.forEach(function (geo) {
-            var exterior = geo.exterior;
-            var interiors = geo.interiors;
-            vertexCount += geometry.getPolylineVertexCount(exterior);
-            triangleCount += geometry.getPolylineTriangleCount(exterior);
-            for (var i = 0; i < interiors.length; i++) {
-                vertexCount += geometry.getPolylineVertexCount(interiors[i]);
-                triangleCount += geometry.getPolylineTriangleCount(interiors[i]);
-            }
-        }, this);
+
+        var regionModel = componentModel.getRegionModel(region.name);
+        var itemStyleModel = regionModel.getModel('itemStyle');
+
+        var lineWidth = itemStyleModel.get('borderWidth');
+        if (lineWidth > 0) {
+            region.geometries.forEach(function (geo) {
+                var exterior = geo.exterior;
+                var interiors = geo.interiors;
+                vertexCount += geometry.getPolylineVertexCount(exterior);
+                triangleCount += geometry.getPolylineTriangleCount(exterior);
+                for (var i = 0; i < interiors.length; i++) {
+                    vertexCount += geometry.getPolylineVertexCount(interiors[i]);
+                    triangleCount += geometry.getPolylineTriangleCount(interiors[i]);
+                }
+            }, this);
+        }
 
         return {
             vertexCount: vertexCount,
@@ -36445,16 +36388,7 @@ Geo3DBuilder.prototype = {
 
     },
 
-    _updateLinesGeometry: function (
-        geometry, region, regionHeight, lineWidth, transform
-    ) {
-
-        var geoInfo = this._getRegionLinesGeoInfo(region, geometry);
-
-        geometry.resetOffset();
-        geometry.setVertexCount(geoInfo.vertexCount);
-        geometry.setTriangleCount(geoInfo.triangleCount);
-
+    _updateLinesGeometry: function (geometry, region, regionHeight, lineWidth, transform) {
         function convertToPoints3(polygon) {
             var points = new Float64Array(polygon.length * 3);
             var offset = 0;
@@ -36484,41 +36418,6 @@ Geo3DBuilder.prototype = {
                 geometry.addPolyline(convertToPoints3(interiors[i]), whiteColor, lineWidth);
             }
         });
-
-        geometry.updateBoundingBox();
-    },
-
-    _moveRegionToCenter: function (polygonMesh, linesMesh, hasLine) {
-        var polygonGeo = polygonMesh.geometry;
-        var linesGeo = linesMesh.geometry;
-
-        var bbox = polygonMesh.geometry.boundingBox;
-        var cp = bbox.min.clone().add(bbox.max).scale(0.5);
-        var offset = cp._array;
-
-        bbox.min.sub(cp);
-        bbox.max.sub(cp);
-
-        var polygonPosArr = polygonGeo.attributes.position.value;
-        for (var i = 0; i < polygonPosArr.length;) {
-            polygonPosArr[i++] -= offset[0];
-            polygonPosArr[i++] -= offset[1];
-            polygonPosArr[i++] -= offset[2];
-        }
-        polygonMesh.position.copy(cp);
-
-        if (hasLine) {
-            linesGeo.boundingBox.min.sub(cp);
-            linesGeo.boundingBox.max.sub(cp);
-
-            var linesPosArr = linesGeo.attributes.position.value;
-            for (var i = 0; i < linesPosArr.length;) {
-                linesPosArr[i++] -= offset[0];
-                linesPosArr[i++] -= offset[1];
-                linesPosArr[i++] -= offset[2];
-            }
-            linesMesh.position.copy(cp);
-        }
     },
 
     highlight: function (dataIndex) {
@@ -36565,19 +36464,9 @@ Geo3DBuilder.prototype = {
     },
 
     _setColorOfDataIndex: function (data, dataIndex, colorArr) {
-        // Instancing
-        if (this._polygonMesh) {
-            for (var i = this._vertexRangeOfDataIndex[dataIndex * 2]; i < this._vertexRangeOfDataIndex[dataIndex * 2 + 1]; i++) {
-                this._polygonMesh.geometry.attributes.color.set(i, colorArr);
-                this._polygonMesh.geometry.dirty();
-            }
-        }
-        else {
-            var polygonMesh = this._polygonMeshesMap[data.getName(dataIndex)];
-            if (polygonMesh) {
-                var material = polygonMesh.material;
-                material.set('color', colorArr);
-            }
+        for (var i = this._vertexRangeOfDataIndex[dataIndex * 2]; i < this._vertexRangeOfDataIndex[dataIndex * 2 + 1]; i++) {
+            this._polygonMesh.geometry.attributes.color.set(i, colorArr);
+            this._polygonMesh.geometry.dirty();
         }
         this._api.getZr().refresh();
     }
@@ -36680,11 +36569,11 @@ Geo3DBuilder.prototype = {
     }
 }));
 // EXTERNAL MODULE: ./node_modules/echarts/lib/coord/geo/fix/textCoord.js
-var textCoord = __webpack_require__(22);
+var textCoord = __webpack_require__(20);
 var textCoord_default = /*#__PURE__*/__webpack_require__.n(textCoord);
 
 // EXTERNAL MODULE: ./node_modules/echarts/lib/coord/geo/fix/geoCoord.js
-var geoCoord = __webpack_require__(23);
+var geoCoord = __webpack_require__(21);
 var geoCoord_default = /*#__PURE__*/__webpack_require__.n(geoCoord);
 
 // CONCATENATED MODULE: ./src/coord/geo3D/Geo3D.js
@@ -40034,7 +39923,7 @@ var Line3DSeries = external__echarts__default.a.extendSeriesModel({
 
 /* harmony default export */ var line3D_Line3DSeries = (Line3DSeries);
 // EXTERNAL MODULE: ./node_modules/zrender/lib/contain/line.js
-var line = __webpack_require__(24);
+var line = __webpack_require__(22);
 var line_default = /*#__PURE__*/__webpack_require__.n(line);
 
 // CONCATENATED MODULE: ./src/chart/line3D/Line3DView.js
@@ -43235,11 +43124,11 @@ external__echarts__default.a.registerLayout(function (ecModel, api) {
     });
 });
 // EXTERNAL MODULE: ./node_modules/echarts/lib/data/Graph.js
-var data_Graph = __webpack_require__(25);
+var data_Graph = __webpack_require__(23);
 var Graph_default = /*#__PURE__*/__webpack_require__.n(data_Graph);
 
 // EXTERNAL MODULE: ./node_modules/echarts/lib/data/helper/linkList.js
-var linkList = __webpack_require__(28);
+var linkList = __webpack_require__(26);
 var linkList_default = /*#__PURE__*/__webpack_require__.n(linkList);
 
 // CONCATENATED MODULE: ./src/chart/graphGL/createGraphFromNodeEdge.js
@@ -43490,8 +43379,8 @@ var GraphSeries = external__echarts__default.a.extendSeriesModel({
 
             // barnesHutOptimize
 
-            // Stop threshold, 0 never stop.
-            stopThreshold: 1,
+            // Maxp layout steps.
+            maxSteps: 1000,
 
             repulsionByDegree: true,
             linLogMode: false,
@@ -44412,12 +44301,8 @@ ForceAtlas2GPU.prototype.getTextureSize = function () {
     };
 };
 
-ForceAtlas2GPU.prototype.isFinished = function (renderer, threshold) {
-    // TODO Safari not support float texture reading
-    var globalSpeedData = this.getTextureData(renderer, 'globalSpeed');
-    // console.log(globalSpeedData[0]);
-    // PENDING
-    return this._inited && globalSpeedData[0] < threshold && this._frame > 10;
+ForceAtlas2GPU.prototype.isFinished = function (maxSteps) {
+    return this._frame > maxSteps;
 };
 
 ForceAtlas2GPU.prototype._swapTexture = function () {
@@ -45394,8 +45279,8 @@ ForceAtlas2.prototype.getNodes = function () {
 ForceAtlas2.prototype.getEdges = function () {
     return this._edges;
 };
-ForceAtlas2.prototype.isFinished = function (threshold) {
-    return this._globalSpeed < threshold && this._frame > 10;
+ForceAtlas2.prototype.isFinished = function (maxSteps) {
+    return this._frame > maxSteps;
 };
 
 ForceAtlas2.prototype.getNodePosition = function (renderer, out) {
@@ -46030,7 +45915,8 @@ external__echarts__default.a.extendChartView({
             this._updatePositionTexture();
 
             api.dispatchAction({
-                type: 'graphGLStartLayout'
+                type: 'graphGLStartLayout',
+                from: this.uid
             });
         }
         else {
@@ -46061,6 +45947,10 @@ external__echarts__default.a.extendChartView({
     },
 
     startLayout: function (seriesModel, ecModel, api, payload) {
+        if (payload && payload.from != null && payload.from !== this.uid) {
+            return;
+        }
+
         var viewGL = this.viewGL;
         var api = this._api;
         var layoutInstance = this._forceLayoutInstance;
@@ -46086,7 +45976,7 @@ external__echarts__default.a.extendChartView({
 
         var self = this;
         var layoutId = this._layoutId = globalLayoutId++;
-        var stopThreshold = layoutModel.getShallow('stopThreshold');
+        var maxSteps = layoutModel.getShallow('maxSteps');
         var steps = layoutModel.getShallow('steps');
         var stepsCount = 0;
         var syncStepCount = Math.max(steps * 2, 20);
@@ -46094,13 +45984,15 @@ external__echarts__default.a.extendChartView({
             if (layoutId !== self._layoutId) {
                 return;
             }
-            if (layoutInstance.isFinished(viewGL.layer.renderer, stopThreshold)) {
+            if (layoutInstance.isFinished(maxSteps)) {
                 api.dispatchAction({
-                    type: 'graphGLStopLayout'
+                    type: 'graphGLStopLayout',
+                    from: self.uid
                 });
                 api.dispatchAction({
                     type: 'graphGLFinishLayout',
-                    points: data.getLayout('points')
+                    points: data.getLayout('points'),
+                    from: self.uid
                 });
                 return;
             }
@@ -46135,6 +46027,10 @@ external__echarts__default.a.extendChartView({
     },
 
     stopLayout: function (seriesModel, ecModel, api, payload) {
+        if (payload && payload.from != null && payload.from !== this.uid) {
+            return;
+        }
+
         this._layoutId = 0;
         this.groupGL.remove(this._forceEdgesMesh);
         this.groupGL.add(this._edgesMesh);
@@ -47442,7 +47338,7 @@ var Clip = __webpack_require__(11);
 
 var color = __webpack_require__(13);
 
-var _util = __webpack_require__(14);
+var _util = __webpack_require__(2);
 
 var isArrayLike = _util.isArrayLike;
 
@@ -48576,7 +48472,7 @@ module.exports = _default;
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LRU = __webpack_require__(6);
+var LRU = __webpack_require__(5);
 
 var kCSSColorTable = {
   'transparent': [0, 0, 0, 0],
@@ -49200,688 +49096,6 @@ exports.stringify = stringify;
 
 /***/ }),
 /* 14 */
-/***/ (function(module, exports) {
-
-/**
- * @module zrender/core/util
- */
-// 用于处理merge时无法遍历Date等对象的问题
-var BUILTIN_OBJECT = {
-  '[object Function]': 1,
-  '[object RegExp]': 1,
-  '[object Date]': 1,
-  '[object Error]': 1,
-  '[object CanvasGradient]': 1,
-  '[object CanvasPattern]': 1,
-  // For node-canvas
-  '[object Image]': 1,
-  '[object Canvas]': 1
-};
-var TYPED_ARRAY = {
-  '[object Int8Array]': 1,
-  '[object Uint8Array]': 1,
-  '[object Uint8ClampedArray]': 1,
-  '[object Int16Array]': 1,
-  '[object Uint16Array]': 1,
-  '[object Int32Array]': 1,
-  '[object Uint32Array]': 1,
-  '[object Float32Array]': 1,
-  '[object Float64Array]': 1
-};
-var objToString = Object.prototype.toString;
-var arrayProto = Array.prototype;
-var nativeForEach = arrayProto.forEach;
-var nativeFilter = arrayProto.filter;
-var nativeSlice = arrayProto.slice;
-var nativeMap = arrayProto.map;
-var nativeReduce = arrayProto.reduce; // Avoid assign to an exported variable, for transforming to cjs.
-
-var methods = {};
-
-function $override(name, fn) {
-  methods[name] = fn;
-}
-/**
- * Those data types can be cloned:
- *     Plain object, Array, TypedArray, number, string, null, undefined.
- * Those data types will be assgined using the orginal data:
- *     BUILTIN_OBJECT
- * Instance of user defined class will be cloned to a plain object, without
- * properties in prototype.
- * Other data types is not supported (not sure what will happen).
- *
- * Caution: do not support clone Date, for performance consideration.
- * (There might be a large number of date in `series.data`).
- * So date should not be modified in and out of echarts.
- *
- * @param {*} source
- * @return {*} new
- */
-
-
-function clone(source) {
-  if (source == null || typeof source != 'object') {
-    return source;
-  }
-
-  var result = source;
-  var typeStr = objToString.call(source);
-
-  if (typeStr === '[object Array]') {
-    result = [];
-
-    for (var i = 0, len = source.length; i < len; i++) {
-      result[i] = clone(source[i]);
-    }
-  } else if (TYPED_ARRAY[typeStr]) {
-    var Ctor = source.constructor;
-
-    if (source.constructor.from) {
-      result = Ctor.from(source);
-    } else {
-      result = new Ctor(source.length);
-
-      for (var i = 0, len = source.length; i < len; i++) {
-        result[i] = clone(source[i]);
-      }
-    }
-  } else if (!BUILTIN_OBJECT[typeStr] && !isPrimitive(source) && !isDom(source)) {
-    result = {};
-
-    for (var key in source) {
-      if (source.hasOwnProperty(key)) {
-        result[key] = clone(source[key]);
-      }
-    }
-  }
-
-  return result;
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} target
- * @param {*} source
- * @param {boolean} [overwrite=false]
- */
-
-
-function merge(target, source, overwrite) {
-  // We should escapse that source is string
-  // and enter for ... in ...
-  if (!isObject(source) || !isObject(target)) {
-    return overwrite ? clone(source) : target;
-  }
-
-  for (var key in source) {
-    if (source.hasOwnProperty(key)) {
-      var targetProp = target[key];
-      var sourceProp = source[key];
-
-      if (isObject(sourceProp) && isObject(targetProp) && !isArray(sourceProp) && !isArray(targetProp) && !isDom(sourceProp) && !isDom(targetProp) && !isBuiltInObject(sourceProp) && !isBuiltInObject(targetProp) && !isPrimitive(sourceProp) && !isPrimitive(targetProp)) {
-        // 如果需要递归覆盖，就递归调用merge
-        merge(targetProp, sourceProp, overwrite);
-      } else if (overwrite || !(key in target)) {
-        // 否则只处理overwrite为true，或者在目标对象中没有此属性的情况
-        // NOTE，在 target[key] 不存在的时候也是直接覆盖
-        target[key] = clone(source[key], true);
-      }
-    }
-  }
-
-  return target;
-}
-/**
- * @param {Array} targetAndSources The first item is target, and the rests are source.
- * @param {boolean} [overwrite=false]
- * @return {*} target
- */
-
-
-function mergeAll(targetAndSources, overwrite) {
-  var result = targetAndSources[0];
-
-  for (var i = 1, len = targetAndSources.length; i < len; i++) {
-    result = merge(result, targetAndSources[i], overwrite);
-  }
-
-  return result;
-}
-/**
- * @param {*} target
- * @param {*} source
- * @memberOf module:zrender/core/util
- */
-
-
-function extend(target, source) {
-  for (var key in source) {
-    if (source.hasOwnProperty(key)) {
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-/**
- * @param {*} target
- * @param {*} source
- * @param {boolean} [overlay=false]
- * @memberOf module:zrender/core/util
- */
-
-
-function defaults(target, source, overlay) {
-  for (var key in source) {
-    if (source.hasOwnProperty(key) && (overlay ? source[key] != null : target[key] == null)) {
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-
-var createCanvas = function () {
-  return methods.createCanvas();
-};
-
-methods.createCanvas = function () {
-  return document.createElement('canvas');
-}; // FIXME
-
-
-var _ctx;
-
-function getContext() {
-  if (!_ctx) {
-    // Use util.createCanvas instead of createCanvas
-    // because createCanvas may be overwritten in different environment
-    _ctx = createCanvas().getContext('2d');
-  }
-
-  return _ctx;
-}
-/**
- * 查询数组中元素的index
- * @memberOf module:zrender/core/util
- */
-
-
-function indexOf(array, value) {
-  if (array) {
-    if (array.indexOf) {
-      return array.indexOf(value);
-    }
-
-    for (var i = 0, len = array.length; i < len; i++) {
-      if (array[i] === value) {
-        return i;
-      }
-    }
-  }
-
-  return -1;
-}
-/**
- * 构造类继承关系
- *
- * @memberOf module:zrender/core/util
- * @param {Function} clazz 源类
- * @param {Function} baseClazz 基类
- */
-
-
-function inherits(clazz, baseClazz) {
-  var clazzPrototype = clazz.prototype;
-
-  function F() {}
-
-  F.prototype = baseClazz.prototype;
-  clazz.prototype = new F();
-
-  for (var prop in clazzPrototype) {
-    clazz.prototype[prop] = clazzPrototype[prop];
-  }
-
-  clazz.prototype.constructor = clazz;
-  clazz.superClass = baseClazz;
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {Object|Function} target
- * @param {Object|Function} sorce
- * @param {boolean} overlay
- */
-
-
-function mixin(target, source, overlay) {
-  target = 'prototype' in target ? target.prototype : target;
-  source = 'prototype' in source ? source.prototype : source;
-  defaults(target, source, overlay);
-}
-/**
- * Consider typed array.
- * @param {Array|TypedArray} data
- */
-
-
-function isArrayLike(data) {
-  if (!data) {
-    return;
-  }
-
-  if (typeof data == 'string') {
-    return false;
-  }
-
-  return typeof data.length == 'number';
-}
-/**
- * 数组或对象遍历
- * @memberOf module:zrender/core/util
- * @param {Object|Array} obj
- * @param {Function} cb
- * @param {*} [context]
- */
-
-
-function each(obj, cb, context) {
-  if (!(obj && cb)) {
-    return;
-  }
-
-  if (obj.forEach && obj.forEach === nativeForEach) {
-    obj.forEach(cb, context);
-  } else if (obj.length === +obj.length) {
-    for (var i = 0, len = obj.length; i < len; i++) {
-      cb.call(context, obj[i], i, obj);
-    }
-  } else {
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        cb.call(context, obj[key], key, obj);
-      }
-    }
-  }
-}
-/**
- * 数组映射
- * @memberOf module:zrender/core/util
- * @param {Array} obj
- * @param {Function} cb
- * @param {*} [context]
- * @return {Array}
- */
-
-
-function map(obj, cb, context) {
-  if (!(obj && cb)) {
-    return;
-  }
-
-  if (obj.map && obj.map === nativeMap) {
-    return obj.map(cb, context);
-  } else {
-    var result = [];
-
-    for (var i = 0, len = obj.length; i < len; i++) {
-      result.push(cb.call(context, obj[i], i, obj));
-    }
-
-    return result;
-  }
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {Array} obj
- * @param {Function} cb
- * @param {Object} [memo]
- * @param {*} [context]
- * @return {Array}
- */
-
-
-function reduce(obj, cb, memo, context) {
-  if (!(obj && cb)) {
-    return;
-  }
-
-  if (obj.reduce && obj.reduce === nativeReduce) {
-    return obj.reduce(cb, memo, context);
-  } else {
-    for (var i = 0, len = obj.length; i < len; i++) {
-      memo = cb.call(context, memo, obj[i], i, obj);
-    }
-
-    return memo;
-  }
-}
-/**
- * 数组过滤
- * @memberOf module:zrender/core/util
- * @param {Array} obj
- * @param {Function} cb
- * @param {*} [context]
- * @return {Array}
- */
-
-
-function filter(obj, cb, context) {
-  if (!(obj && cb)) {
-    return;
-  }
-
-  if (obj.filter && obj.filter === nativeFilter) {
-    return obj.filter(cb, context);
-  } else {
-    var result = [];
-
-    for (var i = 0, len = obj.length; i < len; i++) {
-      if (cb.call(context, obj[i], i, obj)) {
-        result.push(obj[i]);
-      }
-    }
-
-    return result;
-  }
-}
-/**
- * 数组项查找
- * @memberOf module:zrender/core/util
- * @param {Array} obj
- * @param {Function} cb
- * @param {*} [context]
- * @return {*}
- */
-
-
-function find(obj, cb, context) {
-  if (!(obj && cb)) {
-    return;
-  }
-
-  for (var i = 0, len = obj.length; i < len; i++) {
-    if (cb.call(context, obj[i], i, obj)) {
-      return obj[i];
-    }
-  }
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {Function} func
- * @param {*} context
- * @return {Function}
- */
-
-
-function bind(func, context) {
-  var args = nativeSlice.call(arguments, 2);
-  return function () {
-    return func.apply(context, args.concat(nativeSlice.call(arguments)));
-  };
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {Function} func
- * @return {Function}
- */
-
-
-function curry(func) {
-  var args = nativeSlice.call(arguments, 1);
-  return function () {
-    return func.apply(this, args.concat(nativeSlice.call(arguments)));
-  };
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} value
- * @return {boolean}
- */
-
-
-function isArray(value) {
-  return objToString.call(value) === '[object Array]';
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} value
- * @return {boolean}
- */
-
-
-function isFunction(value) {
-  return typeof value === 'function';
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} value
- * @return {boolean}
- */
-
-
-function isString(value) {
-  return objToString.call(value) === '[object String]';
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} value
- * @return {boolean}
- */
-
-
-function isObject(value) {
-  // Avoid a V8 JIT bug in Chrome 19-20.
-  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return type === 'function' || !!value && type == 'object';
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} value
- * @return {boolean}
- */
-
-
-function isBuiltInObject(value) {
-  return !!BUILTIN_OBJECT[objToString.call(value)];
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {*} value
- * @return {boolean}
- */
-
-
-function isDom(value) {
-  return typeof value === 'object' && typeof value.nodeType === 'number' && typeof value.ownerDocument === 'object';
-}
-/**
- * Whether is exactly NaN. Notice isNaN('a') returns true.
- * @param {*} value
- * @return {boolean}
- */
-
-
-function eqNaN(value) {
-  return value !== value;
-}
-/**
- * If value1 is not null, then return value1, otherwise judget rest of values.
- * Low performance.
- * @memberOf module:zrender/core/util
- * @return {*} Final value
- */
-
-
-function retrieve(values) {
-  for (var i = 0, len = arguments.length; i < len; i++) {
-    if (arguments[i] != null) {
-      return arguments[i];
-    }
-  }
-}
-
-function retrieve2(value0, value1) {
-  return value0 != null ? value0 : value1;
-}
-
-function retrieve3(value0, value1, value2) {
-  return value0 != null ? value0 : value1 != null ? value1 : value2;
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {Array} arr
- * @param {number} startIndex
- * @param {number} endIndex
- * @return {Array}
- */
-
-
-function slice() {
-  return Function.call.apply(nativeSlice, arguments);
-}
-/**
- * Normalize css liked array configuration
- * e.g.
- *  3 => [3, 3, 3, 3]
- *  [4, 2] => [4, 2, 4, 2]
- *  [4, 3, 2] => [4, 3, 2, 3]
- * @param {number|Array.<number>} val
- * @return {Array.<number>}
- */
-
-
-function normalizeCssArray(val) {
-  if (typeof val === 'number') {
-    return [val, val, val, val];
-  }
-
-  var len = val.length;
-
-  if (len === 2) {
-    // vertical | horizontal
-    return [val[0], val[1], val[0], val[1]];
-  } else if (len === 3) {
-    // top | horizontal | bottom
-    return [val[0], val[1], val[2], val[1]];
-  }
-
-  return val;
-}
-/**
- * @memberOf module:zrender/core/util
- * @param {boolean} condition
- * @param {string} message
- */
-
-
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-
-var primitiveKey = '__ec_primitive__';
-/**
- * Set an object as primitive to be ignored traversing children in clone or merge
- */
-
-function setAsPrimitive(obj) {
-  obj[primitiveKey] = true;
-}
-
-function isPrimitive(obj) {
-  return obj[primitiveKey];
-}
-/**
- * @constructor
- * @param {Object} obj Only apply `ownProperty`.
- */
-
-
-function HashMap(obj) {
-  obj && each(obj, function (value, key) {
-    this.set(key, value);
-  }, this);
-} // Add prefix to avoid conflict with Object.prototype.
-
-
-var HASH_MAP_PREFIX = '_ec_';
-var HASH_MAP_PREFIX_LENGTH = 4;
-HashMap.prototype = {
-  constructor: HashMap,
-  // Do not provide `has` method to avoid defining what is `has`.
-  // (We usually treat `null` and `undefined` as the same, different
-  // from ES6 Map).
-  get: function (key) {
-    return this[HASH_MAP_PREFIX + key];
-  },
-  set: function (key, value) {
-    this[HASH_MAP_PREFIX + key] = value; // Comparing with invocation chaining, `return value` is more commonly
-    // used in this case: `var someVal = map.set('a', genVal());`
-
-    return value;
-  },
-  // Although util.each can be performed on this hashMap directly, user
-  // should not use the exposed keys, who are prefixed.
-  each: function (cb, context) {
-    context !== void 0 && (cb = bind(cb, context));
-
-    for (var prefixedKey in this) {
-      this.hasOwnProperty(prefixedKey) && cb(this[prefixedKey], prefixedKey.slice(HASH_MAP_PREFIX_LENGTH));
-    }
-  },
-  // Do not use this method if performance sensitive.
-  removeKey: function (key) {
-    delete this[HASH_MAP_PREFIX + key];
-  }
-};
-
-function createHashMap(obj) {
-  return new HashMap(obj);
-}
-
-function noop() {}
-
-exports.$override = $override;
-exports.clone = clone;
-exports.merge = merge;
-exports.mergeAll = mergeAll;
-exports.extend = extend;
-exports.defaults = defaults;
-exports.createCanvas = createCanvas;
-exports.getContext = getContext;
-exports.indexOf = indexOf;
-exports.inherits = inherits;
-exports.mixin = mixin;
-exports.isArrayLike = isArrayLike;
-exports.each = each;
-exports.map = map;
-exports.reduce = reduce;
-exports.filter = filter;
-exports.find = find;
-exports.bind = bind;
-exports.curry = curry;
-exports.isArray = isArray;
-exports.isFunction = isFunction;
-exports.isString = isString;
-exports.isObject = isObject;
-exports.isBuiltInObject = isBuiltInObject;
-exports.isDom = isDom;
-exports.eqNaN = eqNaN;
-exports.retrieve = retrieve;
-exports.retrieve2 = retrieve2;
-exports.retrieve3 = retrieve3;
-exports.slice = slice;
-exports.normalizeCssArray = normalizeCssArray;
-exports.assert = assert;
-exports.setAsPrimitive = setAsPrimitive;
-exports.isPrimitive = isPrimitive;
-exports.createHashMap = createHashMap;
-exports.noop = noop;
-
-/***/ }),
-/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var zrUtil = __webpack_require__(2);
@@ -49986,7 +49200,7 @@ var _default = Cartesian;
 module.exports = _default;
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports) {
 
 var ArrayCtor = typeof Float32Array === 'undefined' ? Array : Float32Array;
@@ -50304,7 +49518,7 @@ exports.min = min;
 exports.max = max;
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /**
@@ -50480,12 +49694,12 @@ exports.scale = scale;
 exports.invert = invert;
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var zrUtil = __webpack_require__(2);
 
-var textContain = __webpack_require__(19);
+var textContain = __webpack_require__(18);
 
 var numberUtil = __webpack_require__(8);
 
@@ -50658,12 +49872,12 @@ exports.truncateText = truncateText;
 exports.getTextRect = getTextRect;
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BoundingRect = __webpack_require__(7);
 
-var imageHelper = __webpack_require__(20);
+var imageHelper = __webpack_require__(19);
 
 var _util = __webpack_require__(2);
 
@@ -51350,10 +50564,10 @@ exports.parseRichText = parseRichText;
 exports.makeFont = makeFont;
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LRU = __webpack_require__(21);
+var LRU = __webpack_require__(5);
 
 var globalImageCache = new LRU(50);
 /**
@@ -51443,214 +50657,7 @@ exports.createOrUpdateImage = createOrUpdateImage;
 exports.isImageReady = isImageReady;
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-// Simple LRU cache use doubly linked list
-// @module zrender/core/LRU
-
-/**
- * Simple double linked list. Compared with array, it has O(1) remove operation.
- * @constructor
- */
-var LinkedList = function () {
-  /**
-   * @type {module:zrender/core/LRU~Entry}
-   */
-  this.head = null;
-  /**
-   * @type {module:zrender/core/LRU~Entry}
-   */
-
-  this.tail = null;
-  this._len = 0;
-};
-
-var linkedListProto = LinkedList.prototype;
-/**
- * Insert a new value at the tail
- * @param  {} val
- * @return {module:zrender/core/LRU~Entry}
- */
-
-linkedListProto.insert = function (val) {
-  var entry = new Entry(val);
-  this.insertEntry(entry);
-  return entry;
-};
-/**
- * Insert an entry at the tail
- * @param  {module:zrender/core/LRU~Entry} entry
- */
-
-
-linkedListProto.insertEntry = function (entry) {
-  if (!this.head) {
-    this.head = this.tail = entry;
-  } else {
-    this.tail.next = entry;
-    entry.prev = this.tail;
-    entry.next = null;
-    this.tail = entry;
-  }
-
-  this._len++;
-};
-/**
- * Remove entry.
- * @param  {module:zrender/core/LRU~Entry} entry
- */
-
-
-linkedListProto.remove = function (entry) {
-  var prev = entry.prev;
-  var next = entry.next;
-
-  if (prev) {
-    prev.next = next;
-  } else {
-    // Is head
-    this.head = next;
-  }
-
-  if (next) {
-    next.prev = prev;
-  } else {
-    // Is tail
-    this.tail = prev;
-  }
-
-  entry.next = entry.prev = null;
-  this._len--;
-};
-/**
- * @return {number}
- */
-
-
-linkedListProto.len = function () {
-  return this._len;
-};
-/**
- * Clear list
- */
-
-
-linkedListProto.clear = function () {
-  this.head = this.tail = null;
-  this._len = 0;
-};
-/**
- * @constructor
- * @param {} val
- */
-
-
-var Entry = function (val) {
-  /**
-   * @type {}
-   */
-  this.value = val;
-  /**
-   * @type {module:zrender/core/LRU~Entry}
-   */
-
-  this.next;
-  /**
-   * @type {module:zrender/core/LRU~Entry}
-   */
-
-  this.prev;
-};
-/**
- * LRU Cache
- * @constructor
- * @alias module:zrender/core/LRU
- */
-
-
-var LRU = function (maxSize) {
-  this._list = new LinkedList();
-  this._map = {};
-  this._maxSize = maxSize || 10;
-  this._lastRemovedEntry = null;
-};
-
-var LRUProto = LRU.prototype;
-/**
- * @param  {string} key
- * @param  {} value
- * @return {} Removed value
- */
-
-LRUProto.put = function (key, value) {
-  var list = this._list;
-  var map = this._map;
-  var removed = null;
-
-  if (map[key] == null) {
-    var len = list.len(); // Reuse last removed entry
-
-    var entry = this._lastRemovedEntry;
-
-    if (len >= this._maxSize && len > 0) {
-      // Remove the least recently used
-      var leastUsedEntry = list.head;
-      list.remove(leastUsedEntry);
-      delete map[leastUsedEntry.key];
-      removed = leastUsedEntry.value;
-      this._lastRemovedEntry = leastUsedEntry;
-    }
-
-    if (entry) {
-      entry.value = value;
-    } else {
-      entry = new Entry(value);
-    }
-
-    entry.key = key;
-    list.insertEntry(entry);
-    map[key] = entry;
-  }
-
-  return removed;
-};
-/**
- * @param  {string} key
- * @return {}
- */
-
-
-LRUProto.get = function (key) {
-  var entry = this._map[key];
-  var list = this._list;
-
-  if (entry != null) {
-    // Put the latest used entry in the tail
-    if (entry !== list.tail) {
-      list.remove(entry);
-      list.insertEntry(entry);
-    }
-
-    return entry.value;
-  }
-};
-/**
- * Clear the cache
- */
-
-
-LRUProto.clear = function () {
-  this._list.clear();
-
-  this._map = {};
-};
-
-var _default = LRU;
-module.exports = _default;
-
-/***/ }),
-/* 22 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var zrUtil = __webpack_require__(2);
@@ -51680,7 +50687,7 @@ function _default(geo) {
 module.exports = _default;
 
 /***/ }),
-/* 23 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var zrUtil = __webpack_require__(2);
@@ -51706,7 +50713,7 @@ function _default(geo) {
 module.exports = _default;
 
 /***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /**
@@ -51750,10 +50757,10 @@ function containStroke(x0, y0, x1, y1, lineWidth, x, y) {
 exports.containStroke = containStroke;
 
 /***/ }),
-/* 25 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _config = __webpack_require__(26);
+var _config = __webpack_require__(24);
 
 var __DEV__ = _config.__DEV__;
 
@@ -52288,7 +51295,7 @@ var _default = Graph;
 module.exports = _default;
 
 /***/ }),
-/* 26 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {// (1) The code `if (__DEV__) ...` can be removed by build tool.
@@ -52311,10 +51318,10 @@ if (typeof dev === 'undefined') {
 
 var __DEV__ = dev;
 exports.__DEV__ = __DEV__;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
-/* 27 */
+/* 25 */
 /***/ (function(module, exports) {
 
 var g;
@@ -52341,7 +51348,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 28 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var zrUtil = __webpack_require__(2);

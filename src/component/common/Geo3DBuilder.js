@@ -142,7 +142,12 @@ Geo3DBuilder.prototype = {
         this._vertexRangeOfDataIndex = new Uint32Array(geo3D.regions.length * 2);
     },
 
+    _shouldRegionUpdate: true,
+
     _updateRegionMesh: function (componentModel, geo3D, shader, api) {
+
+        if (!this._shouldRegionUpdate) return;
+        this._shouldRegionUpdate = false;
 
         var data = componentModel.getData();
 
